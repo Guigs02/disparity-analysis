@@ -1,26 +1,34 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def process_and_save_plot(input_csv='reviewers_gender.csv', output_plot='plot.png'):
+    """
+    Processes the data from a CSV, generates a gender distribution plot, and saves the plot to a file.
 
-if __name__== '__main__':
-    df = pd.read_csv("reviewers_gender.csv")
+    Parameters:
+    - input_csv (str): Path to the input CSV file. Default is 'reviewers_gender.csv'.
+    - output_plot (str): Path where the plot image will be saved. Default is 'plot.png'.
+    """
+
+    # Read the CSV file
+    df = pd.read_csv(input_csv)
     
+    # Drop the first two columns (temporarily, without altering the original CSV)
     df_sorted = df.drop(df.columns[[0, 1]], axis=1)
-    df_sorted.to_csv("reviewers_gender.csv")
-    print(df_sorted.head(20))
+    
     # Get the repartition of each category
-    values = df['gender'].value_counts(normalize=True)*100
     genders_to_include = ['female', 'male', 'unknown']
     filtered_df = df[df['gender'].isin(genders_to_include)]
 
     # Create the plot
     gender_counts = filtered_df['gender'].value_counts(normalize=True)
-    data = gender_counts.plot(kind='bar', color=['#1f77b4', '#ff7f0e', '#2ca02c'], rot=0, grid=True)
-    data.set_ylim(0, 1)
-    data.bar_label(data.containers[0])
+    ax = gender_counts.plot(kind='bar', color=['#1f77b4', '#ff7f0e', '#2ca02c'], rot=0, grid=True)
+    ax.set_ylim(0, 1)
+    ax.bar_label(ax.containers[0])
 
     plt.xlabel('Sex')
     plt.ylabel('Percentage')
     plt.title('Sex Parity')
-    plt.show()
-    
+
+    # Save the plot to a file
+    plt.savefig(output_plot)
